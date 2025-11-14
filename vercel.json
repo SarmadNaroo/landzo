@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && mv dist/client/index.html dist/client/spa.html",
   "builds": [
     { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist/client" } },
     { "src": "api/ssr.ts", "use": "@vercel/node", "config": { "includeFiles": "dist/**" } }
   ],
   "routes": [
-    { "src": "^/$", "dest": "/api/ssr" },
+    { "src": "^/$", "dest": "/api/ssr?url=/" },
     { "handle": "filesystem" },
-    { "src": "^/register$", "dest": "/index.html" },
+    { "src": "^/register$", "dest": "/spa.html" },
     { "src": "^/(robots\\.txt|favicon\\.ico)$", "dest": "/$1" },
-    { "src": "^/(?!api).*", "dest": "/index.html" }
+    { "src": "^/(?!api).*", "dest": "/spa.html" }
   ]
 }

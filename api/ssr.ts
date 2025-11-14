@@ -2,12 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { pathToFileURL } from 'url'
 
-const templatePath = path.resolve(process.cwd(), 'dist/client/index.html')
+const templatePath = path.resolve(process.cwd(), 'dist/client/spa.html')
 const template = fs.readFileSync(templatePath, 'utf-8')
 
 export default async function handler(req: any, res: any) {
   try {
-    const url = req.url || '/'
+    const url = '/'
 
     const entryPath = path.resolve(process.cwd(), 'dist/server/entry-server.js')
     const { render } = await import(pathToFileURL(entryPath).href)
