@@ -5,11 +5,6 @@
     { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist/client" } },
     { "src": "api/ssr.ts", "use": "@vercel/node", "config": { "includeFiles": "dist/**" } }
   ],
-  "functions": {
-    "api/ssr.ts": {
-      "includeFiles": "dist/**"
-    }
-  },
   "routes": [
     { "src": "^/$", "dest": "/api/ssr" },
     { "src": "^/register$", "dest": "/index.html" },
