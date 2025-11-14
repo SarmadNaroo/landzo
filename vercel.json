@@ -3,7 +3,7 @@
   "builds": [{ "src": "api/ssr.ts", "use": "@vercel/node" }],
   "functions": {
     "api/ssr.ts": {
-      "includeFiles": ["dist/client/**", "dist/server/**"]
+      "includeFiles": "dist/**"
     }
   },
   "routes": [
