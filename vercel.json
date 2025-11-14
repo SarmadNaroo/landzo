@@ -1,0 +1,31 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "dist/client/**",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "api/ssr.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/assets/(.*)",
+            "dest": "/dist/client/assets/$1"
+        },
+        {
+            "src": "^/$",
+            "dest": "/api/ssr"
+        },
+        {
+            "src": "/states/?.*",
+            "dest": "/api/ssr"
+        },
+        {
+            "src": "/.*",
+            "dest": "/dist/client/index.html"
+        }
+    ]
+}
