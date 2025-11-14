@@ -1,0 +1,19 @@
+{
+  "buildCommand": "npm run build",
+  "builds": [{ "src": "api/ssr.ts", "use": "@vercel/node" }],
+  "functions": {
+    "api/ssr.ts": {
+      "includeFiles": ["dist/client/**", "dist/server/**"]
+    }
+  },
+  "routes": [
+    { "src": "^/(.*\\.(?:js|css|map|json|ico|png|jpg|jpeg|gif|svg|webp|avif|woff2?|ttf))$", "dest": "/dist/client/$1" },
+    { "src": "^/assets/(.*)$", "dest": "/dist/client/assets/$1" },
+    { "src": "^/vite.svg$", "dest": "/dist/client/vite.svg" },
+
+    { "src": "^/$", "dest": "/api/ssr" },
+
+    { "src": "/register", "dest": "/dist/client/index.html" },
+    { "src": "/.*", "dest": "/dist/client/index.html" }
+  ]
+}
