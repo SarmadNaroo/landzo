@@ -1,26 +1,29 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import type { ViteDevServer } from "vite";
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === "production" || process.env.VERCEL;
 const port = process.env.PORT || 5173;
 const base = process.env.BASE || "/";
 
-// Cached production assets
-const templateHtml = isProduction
-  ? fs.readFileSync(
-      path.resolve("dist/client/index.html"),
-      "utf-8"
-    )
-  : "";
+// Get the directory path for resolving files
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootDir = path.resolve(__dirname, "..");
 
-const ssrManifest = isProduction
-  ? fs.readFileSync(
-      path.resolve("dist/client/.vite/ssr-manifest.json"),
+// Cached production assets
+let templateHtml = "";
+if (isProduction) {
+  try {
+    templateHtml = fs.readFileSync(
+      path.join(rootDir, "dist/client/index.html"),
       "utf-8"
-    )
-  : undefined;
+    );
+  } catch (err) {
+    console.error("Failed to load template:", err);
+  }
+}
 
 export async function createServer() {
   const app = express();
@@ -40,7 +43,7 @@ export async function createServer() {
     const compression = (await import("compression")).default;
     const sirv = (await import("sirv")).default;
     app.use(compression());
-    app.use(base, sirv("dist/client", { extensions: [] }));
+    app.use(base, sirv(path.join(rootDir, "dist/client"), { extensions: [] }));
   }
 
   // Define SSR routes - these routes will be server-side rendered
@@ -57,7 +60,7 @@ export async function createServer() {
       if (!isProduction && vite) {
         // Development mode: always read fresh template
         template = fs.readFileSync(
-          path.resolve("index.html"),
+          path.join(rootDir, "index.html"),
           "utf-8"
         );
         template = await vite.transformIndexHtml(url, template);
@@ -65,7 +68,8 @@ export async function createServer() {
       } else {
         // Production mode: use cached template
         template = templateHtml;
-        render = (await import("./entry-server.js")).render;
+        const serverModule = await import(path.join(rootDir, "dist/server/entry-server.js"));
+        render = serverModule.render;
       }
 
       // Check if the route should be SSR or CSR
