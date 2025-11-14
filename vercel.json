@@ -7,6 +7,7 @@
   ],
   "routes": [
     { "src": "^/$", "dest": "/api/ssr" },
+    { "handle": "filesystem" },
     { "src": "^/register$", "dest": "/index.html" },
     { "src": "^/(robots\\.txt|favicon\\.ico)$", "dest": "/$1" },
     { "src": "^/(?!api).*", "dest": "/index.html" }
