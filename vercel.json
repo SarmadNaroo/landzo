@@ -4,31 +4,14 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/assets/:path*",
-      "destination": "/assets/:path*"
-    },
-    {
-      "source": "/",
-      "destination": "/api/ssr"
-    },
-    {
-      "source": "/states/:path*",
-      "destination": "/api/ssr"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
+      "source": "/(.*)",
+      "destination": "/api"
     }
   ],
-  "headers": [
-    {
-      "source": "/assets/:path*",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
+  "functions": {
+    "api/index.ts": {
+      "memory": 1024,
+      "maxDuration": 10
     }
-  ]
+  }
 }

@@ -22,7 +22,7 @@ const ssrManifest = isProduction
     )
   : undefined;
 
-async function createServer() {
+export async function createServer() {
   const app = express();
 
   // Add Vite or respective production middlewares
@@ -95,9 +95,18 @@ async function createServer() {
   return app;
 }
 
-createServer().then((app) => {
-  app.listen(port, () => {
-    console.log(`
+// Only run the server if this file is executed directly (not imported by Vercel)
+if (import.meta.url.startsWith('file:')) {
+  const modulePath = new URL(import.meta.url).pathname;
+  const isMainModule = process.argv[1] && (
+    modulePath === process.argv[1] ||
+    modulePath === process.argv[1].replace(/\\/g, '/')
+  );
+
+  if (isMainModule) {
+    createServer().then((app) => {
+      app.listen(port, () => {
+        console.log(`
 Server is running!
 
 Local:   http://localhost:${port}
@@ -111,6 +120,8 @@ CSR Routes:
   • /register
   • /categories
   • All other routes
-    `);
-  });
-});
+        `);
+      });
+    });
+  }
+}
