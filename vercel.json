@@ -1,22 +1,19 @@
 {
+  "version": 2,
   "buildCommand": "npm run build",
   "builds": [
-    {
-      "src": "api/ssr.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": "dist/**"
-      }
-    }
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist/client" } },
+    { "src": "api/ssr.ts", "use": "@vercel/node", "config": { "includeFiles": "dist/**" } }
   ],
+  "functions": {
+    "api/ssr.ts": {
+      "includeFiles": "dist/**"
+    }
+  },
   "routes": [
-    { "src": "^/(.*\\.(?:js|css|map|json|ico|png|jpg|jpeg|gif|svg|webp|avif|woff2?|ttf))$", "dest": "/dist/client/$1" },
-    { "src": "^/assets/(.*)$", "dest": "/dist/client/assets/$1" },
-    { "src": "^/vite.svg$", "dest": "/dist/client/vite.svg" },
-
     { "src": "^/$", "dest": "/api/ssr" },
-
-    { "src": "/register", "dest": "/dist/client/index.html" },
-    { "src": "/.*", "dest": "/dist/client/index.html" }
+    { "src": "^/register$", "dest": "/index.html" },
+    { "src": "^/(robots\\.txt|favicon\\.ico)$", "dest": "/$1" },
+    { "src": "^/(?!api).*", "dest": "/index.html" }
   ]
 }
