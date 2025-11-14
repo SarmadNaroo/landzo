@@ -1,11 +1,14 @@
 {
   "buildCommand": "npm run build",
-  "builds": [{ "src": "api/ssr.ts", "use": "@vercel/node" }],
-  "functions": {
-    "api/ssr.ts": {
-      "includeFiles": "dist/**"
+  "builds": [
+    {
+      "src": "api/ssr.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": "dist/**"
+      }
     }
-  },
+  ],
   "routes": [
     { "src": "^/(.*\\.(?:js|css|map|json|ico|png|jpg|jpeg|gif|svg|webp|avif|woff2?|ttf))$", "dest": "/dist/client/$1" },
     { "src": "^/assets/(.*)$", "dest": "/dist/client/assets/$1" },
